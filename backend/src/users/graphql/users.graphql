@@ -1,0 +1,44 @@
+scalar DateTime
+
+type Query {
+  allUsers(skip: Int, limit: Int): [User]
+  _allUsersMeta: Meta
+  user(username: String!): User
+}
+
+type Mutation {
+  createUser(createUserInput: createUserInput): User
+  changePassword(oldPassword: String!, newPassword: String!): User
+  editCaption(createEditCaption: createEditCaption): User
+}
+
+input createEditCaption {
+  caption_id: Int
+  text: String
+}
+
+input createUserInput {
+  username: String
+  email: String
+  password: String
+  firstName: String
+  lastName: String
+}
+
+type UserEditCaption {
+  caption_id: Int
+  text: String
+}
+
+type User {
+  username: String
+  email: String
+  captionEditCount: Int
+  captionEdit: [UserEditCaption]
+  firstName: String
+  lastName: String
+  verified: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+  lastLogin: DateTime
+}

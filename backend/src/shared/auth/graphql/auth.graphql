@@ -1,0 +1,17 @@
+type Mutation {
+  login(createUserLogin: createUserLogin): JwtResponse
+}
+
+type Query {
+  currentUser: User
+}
+
+input createUserLogin {
+  username: String
+  password: String
+}
+
+type JwtResponse {
+  accessToken: String
+  expiresIn: Int
+}

@@ -1,0 +1,39 @@
+scalar DateTime
+
+type Query {
+  allImages(skip: Int, limit: Int, search: String): [Image]
+  _allImagesMeta: Meta
+  image(id: ID!): Image
+  findImgUrlsByIds(ids: [ID!]): [Image]
+}
+
+# type Mutation {
+#   createCat(createCatInput: CreateCatInput): Cat
+# }
+
+# type Subscription {
+#   catCreated: Cat
+# }
+
+type Caption {
+  en: String
+  id: String
+  caption_id: Int
+}
+
+type Image {
+  obj_id: Int
+  image_id: Int
+  captions: [Caption]
+  file_name: String
+  coco_url: String
+  flickr_url: String
+  height: Int
+  width: Int
+  date_captured: DateTime
+}
+
+# input CreateCatInput {
+#   name: String
+#   age: Int
+# }

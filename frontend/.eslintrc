@@ -1,0 +1,94 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "eslint-config-airbnb-base",
+    "eslint-config-airbnb-base/rules/strict",
+    "eslint-config-airbnb/rules/react",
+    "prettier"
+  ],
+  "plugins": ["react", "babel"],
+  "settings": {
+    "import/resolver": {
+      "babel-module": {
+        "root": "./",
+        "alias": {
+          "@": "./src"
+        }
+      }
+    }
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "mocha": true
+  },
+  "rules": {
+    "strict": [2, "never"],
+    "quotes": [2, "single"],
+    "padded-blocks": 0,
+    "no-tabs": 2,
+    "indent": "off",
+    "comma-dangle": [0, "always-multiline"],
+    "no-cond-assign": [2, "except-parens"],
+    "prefer-const": 1,
+    "no-const-assign": 2,
+    "eol-last": 0,
+    "curly": 2,
+    "brace-style": [
+      2,
+      "1tbs",
+      {
+        "allowSingleLine": false
+      }
+    ],
+    "no-nested-ternary": 1,
+    "no-class-assign": 2,
+    "arrow-spacing": 2,
+    "no-use-before-define": 0,
+    "babel/arrow-parens": [2, "as-needed"],
+    "object-shorthand": [2, "methods"],
+    "no-multiple-empty-lines": 0,
+    "consistent-return": 0,
+    "no-console": 0,
+    "new-cap": 0,
+    "default-case": 0,
+    "no-unused-vars": 1,
+    "no-alert": 0,
+    "no-undef": 2,
+    "no-underscore-dangle": 0,
+    "semi": 1,
+    "prefer-destructuring": 1,
+    "max-len": 0,
+    "global-require": 0,
+    "class-methods-use-this": 0,
+    "react/display-name": 0,
+    "react/jsx-boolean-value": 0,
+    "react/jsx-no-duplicate-props": 1,
+    "react/jsx-no-undef": 1,
+    "jsx-quotes": 1,
+    "react/jsx-sort-prop-types": 0,
+    "react/jsx-sort-props": 0,
+    "react/jsx-uses-react": 1,
+    "react/jsx-uses-vars": 1,
+    "react/no-array-index-key": 0,
+    "react/no-danger": 0,
+    "react/no-did-mount-set-state": 1,
+    "react/no-did-update-set-state": 1,
+    "react/no-multi-comp": 0,
+    "react/no-unknown-property": 1,
+    "react/prop-types": 1,
+    "react/react-in-jsx-scope": 0,
+    "react/self-closing-comp": 1,
+    "react/sort-comp": 1,
+    "react/jsx-wrap-multilines": 1,
+    "react/jsx-filename-extension": 0,
+    "react/require-default-props": 1,
+    "react/prefer-stateless-function": 0,
+    "import/extensions": 0,
+    "import/first": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/no-unresolved": 2,
+    "import/no-deprecated": 2
+  }
+}
