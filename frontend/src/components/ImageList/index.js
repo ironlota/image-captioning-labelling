@@ -215,8 +215,6 @@ class ImageList extends Component {
   }) => {
     const { classes } = this.props;
 
-    console.log(needEmotion);
-
     const imageCaption = captionsEntity.find(capt => capt.image_id === id);
 
     const captionsModified = captions.map(caption => {
