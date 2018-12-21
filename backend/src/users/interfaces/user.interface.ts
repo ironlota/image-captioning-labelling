@@ -10,8 +10,10 @@ export class User extends Document {
   readonly firstName: string;
   readonly lastName: string;
   readonly verified: boolean;
-  captionEditCount?: number;
-  captionEdit?: [Caption];
+  readonly captionEditCount?: number;
+  readonly captionCuratedCount?: number;
+  readonly captionEmotionCount?: number;
+  readonly captions?: [Caption];
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly lastLogin: Date;

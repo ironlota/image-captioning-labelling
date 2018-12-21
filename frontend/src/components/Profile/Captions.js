@@ -143,7 +143,7 @@ class Captions extends Component {
                               {editAction => (
                                 <ListItemSecondaryAction>
                                   <EditCaption
-                                    image={findImgUrlsByIds[idx].coco_url}
+                                    image={findImgUrlsByIds[idx].url}
                                     imageHeight={findImgUrlsByIds[idx].height}
                                     imageWidth={findImgUrlsByIds[idx].width}
                                     caption={caption}

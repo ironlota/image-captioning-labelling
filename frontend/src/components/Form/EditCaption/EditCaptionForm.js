@@ -58,7 +58,7 @@ import { TextField } from 'formik-material-ui';
 @withMobileDialog()
 @connect(
   (state, { caption }) => ({
-    open: state.caption[caption.caption_id],
+    open: state.caption.editCaption[caption.caption_id],
   }),
   ({ caption: { editCaption }, message: { setMessage } }) => ({
     editCaption,
@@ -74,8 +74,9 @@ class EditCaption extends Component {
     editCaption: PropTypes.func.isRequired,
 
     image: PropTypes.string.isRequired,
-    imageHeight: PropTypes.number.isRequired,
-    imageWidth: PropTypes.number.isRequired,
+    objId: PropTypes.number.isRequired,
+    imageId: PropTypes.string.isRequired,
+
     caption: PropTypes.shape({}).isRequired,
 
     action: PropTypes.func.isRequired,
@@ -104,18 +105,15 @@ class EditCaption extends Component {
     const {
       classes,
       fullScreen,
-
       open,
-
       action: editCaptionAction,
-
       caption,
+
       image,
-      imageHeight,
-      imageWidth,
+      imageId,
+      objId,
 
       refetch,
-
       setMessage,
     } = this.props;
 
@@ -125,7 +123,12 @@ class EditCaption extends Component {
           <EditIcon />
         </IconButton>
         <Formik
-          initialValues={{ text: '', caption_id: caption.caption_id }}
+          initialValues={{
+            text: '',
+            caption_id: caption.caption_id,
+            image_id: imageId,
+            obj_id: objId,
+          }}
           validationSchema={Yup.object().shape({
             text: Yup.string()
               .min(6, 'Caption must be longer than 6 characters!')
@@ -175,19 +178,13 @@ class EditCaption extends Component {
                 </DialogTitle>
                 <DialogContent>
                   <Card
-                    style={{
-                      height: imageHeight * 0.6,
-                      width: imageWidth * 0.6,
-                    }}
+                    style={{ height: '60%', width: '60%' }}
                     className={classes.card}
                   >
                     <CardMedia
                       className={classes.cover}
                       component="img"
-                      style={{
-                        height: imageHeight * 0.6,
-                        width: imageWidth * 0.6,
-                      }}
+                      style={{ height: '60%', width: '60%' }}
                       image={image}
                       alt={caption.en}
                       title={caption.en}

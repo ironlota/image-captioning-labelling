@@ -37,7 +37,7 @@ export class AuthService {
       $set: { lastLogin: Date.now() },
     });
 
-    const { password: pass, captionEdit, ...rest } = user;
+    const { password: pass, captions, ...rest } = user;
 
     const accessToken = this.jwtService.sign(rest);
 

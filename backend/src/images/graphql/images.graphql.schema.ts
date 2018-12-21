@@ -1,10 +1,10 @@
 export class Image {
   obj_id?: number;
-  image_id?: number;
+  image_id?: string;
   file_name?: string;
   captions?: Caption[];
-  coco_url?: string;
-  flickr_url?: string;
+  url?: string;
+  need_emotion?: boolean;
   height?: number;
   width?: number;
   date_captured?: Date;

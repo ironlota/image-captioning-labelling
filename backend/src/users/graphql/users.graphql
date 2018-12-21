@@ -10,11 +10,30 @@ type Mutation {
   createUser(createUserInput: createUserInput): User
   changePassword(oldPassword: String!, newPassword: String!): User
   editCaption(createEditCaption: createEditCaption): User
+  curateCaption(createCurateCaption: createCurateCaption): User
+  emotionCaption(createEmotionCaption: createEmotionCaption): User
+  changeStep(objId: Int!, status: String!): User
+}
+
+input createCurateCaption {
+  obj_id: Int
+  image_id: String
+  curatedCaptions: [Int]
 }
 
 input createEditCaption {
+  obj_id: Int
+  image_id: String
   caption_id: Int
   text: String
+}
+
+input createEmotionCaption {
+  obj_id: Int
+  image_id: String
+  happy: String
+  sad: String
+  angry: String
 }
 
 input createUserInput {
@@ -30,11 +49,28 @@ type UserEditCaption {
   text: String
 }
 
+type UserEmotionCaption {
+  happy: String
+  sad: String
+  angry: String
+}
+
+type UserCaption {
+  obj_id: Int
+  image_id: String
+  step: String
+  curatedCaptions: [Int]
+  captionEdit: [UserEditCaption]
+  captionEmotion: UserEmotionCaption
+}
+
 type User {
   username: String
   email: String
   captionEditCount: Int
-  captionEdit: [UserEditCaption]
+  captionCuratedCount: Int
+  captionEmotionCount: Int
+  captions: [UserCaption]
   firstName: String
   lastName: String
   verified: Boolean

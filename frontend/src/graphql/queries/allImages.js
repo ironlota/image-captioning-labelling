@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 export default gql`
   query getAllImages($skip: Int, $limit: Int, $search: String) {
     allImages(skip: $skip, limit: $limit, search: $search) {
+      obj_id
       image_id
       height
       width
@@ -11,15 +12,26 @@ export default gql`
         en
         caption_id
       }
-      coco_url
-      date_captured
+      url
     }
     currentUser {
-      captionEditCount
-      captionEdit {
-        caption_id
-        text
+      captions {
+        image_id
+        obj_id
+        curatedCaptions
+        captionEdit {
+          caption_id
+          text
+        }
+        captionEmotion {
+          sad
+          happy
+          angry
+        }
       }
+      captionEditCount
+      captionCuratedCount
+      captionEmotionCount
     }
     _allImagesMeta {
       count

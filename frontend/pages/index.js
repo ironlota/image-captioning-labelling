@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import FrontImages from '@/components/FrontImages';
+import ImageList from '@/components/ImageList';
 
 import redirect from '@/utils/redirect';
 import checkLoggedIn from '@/utils/checkLoggedIn';
@@ -16,7 +16,7 @@ import checkLoggedIn from '@/utils/checkLoggedIn';
     height: '100vh',
   },
 })
-class Index extends React.Component {
+class Images extends React.Component {
   static propTypes = {
     classes: PropTypes.shape({}).isRequired,
   };
@@ -39,10 +39,10 @@ class Index extends React.Component {
 
     return (
       <div className={classes.root}>
-        <FrontImages />
+        <ImageList />
       </div>
     );
   }
 }
 
-export default Index;
+export default Images;

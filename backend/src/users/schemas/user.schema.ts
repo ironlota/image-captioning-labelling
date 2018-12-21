@@ -5,6 +5,25 @@ export const CaptionEditSchema = new mongoose.Schema({
   caption_id: { type: Number },
 });
 
+export const CaptionEmotionSchema = new mongoose.Schema({
+  happy: { type: String },
+  sad: { type: String },
+  angry: { type: String },
+});
+
+export const Caption = new mongoose.Schema({
+  obj_id: { type: Number },
+  image_id: { type: String },
+  step: {
+    type: String,
+    enum: ['none', 'curated', 'edited', 'emotion'],
+    default: 'none',
+  },
+  curatedCaptions: { type: [Number], default: [] },
+  captionEdit: { type: [CaptionEditSchema], default: [] },
+  captionEmotion: { type: CaptionEmotionSchema, default: {} },
+});
+
 export const UsersSchema = new mongoose.Schema(
   {
     username: {
@@ -20,14 +39,10 @@ export const UsersSchema = new mongoose.Schema(
       minLength: [6, 'Username is too short'],
       maxLength: [15, 'Username is too long'],
     },
-    captionEditCount: {
-      type: Number,
-      default: 0,
-    },
-    captionEdit: {
-      type: [CaptionEditSchema],
-      default: [],
-    },
+    captionEditCount: { type: Number, default: 0 },
+    captionCuratedCount: { type: Number, default: 0 },
+    captionEmotionCount: { type: Number, default: 0 },
+    captions: { type: [Caption], default: [] },
     email: { type: String, required: true },
     password: { type: String, required: true },
     firstName: { type: String, required: true },

@@ -23,11 +23,11 @@ type Caption {
 
 type Image {
   obj_id: Int
-  image_id: Int
+  image_id: String
   captions: [Caption]
   file_name: String
-  coco_url: String
-  flickr_url: String
+  url: String
+  need_emotion: Boolean
   height: Int
   width: Int
   date_captured: DateTime

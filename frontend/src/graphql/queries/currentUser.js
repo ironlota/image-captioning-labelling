@@ -9,6 +9,8 @@ export default gql`
       lastName
       lastLogin
       captionEditCount
+      captionCuratedCount
+      captionEmotionCount
     }
   }
 `;

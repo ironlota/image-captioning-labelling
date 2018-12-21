@@ -4,8 +4,11 @@ export class User {
   username?: string;
   email?: string;
   @Exclude() password?: string;
+  step?: number;
   captionEditCount?: number;
-  captionEdit?: [Caption];
+  captionCuratedCount?: number;
+  captionEmotionCount?: number;
+  captions?: [Caption];
   firstName?: string;
   lastName?: string;
   verified?: boolean;
@@ -15,8 +18,22 @@ export class User {
 }
 
 export class Caption {
+  obj_id: number;
+  image_id: string;
+  curatedCaptions: [number];
+  captionEdit: [CaptionEdit];
+  captionEmotion: CaptionEmotion;
+}
+
+export class CaptionEdit {
   caption_id?: number;
   text?: string;
+}
+
+export class CaptionEmotion {
+  happy?: string;
+  sad?: string;
+  angry?: string;
 }
 
 export class CreateUserInput {

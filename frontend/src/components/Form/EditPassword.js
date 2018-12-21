@@ -118,7 +118,6 @@ class EditPassword extends Component {
               .required('Password confirm is required'),
           })}
           onSubmit={({ newPasswordConfirm, ...rest }, { setSubmitting }) => {
-            console.log(rest);
             editPasswordAction({ variables: rest })
               .then(() => {
                 setSubmitting(false);

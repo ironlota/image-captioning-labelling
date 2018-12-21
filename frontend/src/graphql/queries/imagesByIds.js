@@ -4,7 +4,7 @@ export default gql`
   query findImgUrlsByIds($ids: [ID!]) {
     findImgUrlsByIds(ids: $ids) {
       image_id
-      coco_url
+      url
       captions {
         caption_id
         id

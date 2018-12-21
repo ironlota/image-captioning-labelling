@@ -32,7 +32,7 @@ export class ImagesService {
         {
           skip,
           limit,
-          sort: { image_id: 1 },
+          /* sort: { image_id: 1 }, */
         },
       )
       .exec();

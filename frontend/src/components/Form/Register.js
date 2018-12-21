@@ -120,7 +120,7 @@ class RegisterForm extends Component {
                   setMessage({
                     message: 'Registration Success!',
                     messageType: 'success',
-                    timeout: 1000,
+                    timeout: 350,
                     callback: () => {
                       setTimeout(() => {
                         apolloClient.cache.reset().then(() => {

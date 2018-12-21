@@ -1,4 +1,4 @@
-import { ParseIntPipe, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
 // import { PubSub } from 'graphql-subscriptions';
 
@@ -32,7 +32,7 @@ export class ImagesResolvers {
 
   @Query('image')
   @UseGuards(JwtAuthGuard)
-  async findOneById(@Args('id', ParseIntPipe) id: number): Promise<Image> {
+  async findOneById(id: number): Promise<Image> {
     return await this.imagesService.findOne(id);
   }
 

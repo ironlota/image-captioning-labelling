@@ -55,7 +55,7 @@ class ImageList extends Component {
           placeholder={<CircularProgress />}
           debounce={500}
         > */}
-        <img src={tile.coco_url} alt={tile.title} />
+        <img src={tile.url} alt={tile.title} />
         {/* </LazyLoad> */}
       </GridListTile>
     );

@@ -31,7 +31,6 @@ const github = {
         const users = await response.json();
         this.receiveUsers(users);
       } catch (err) {
-        console.log(err);
         this.receiveUsers([]);
       }
     },

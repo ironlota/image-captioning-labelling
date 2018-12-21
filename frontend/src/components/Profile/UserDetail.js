@@ -79,6 +79,8 @@ class UserDetail extends Component {
       lastName: PropTypes.string,
       lastLogin: PropTypes.string,
       captionEditCount: PropTypes.number,
+      captionCuratedCount: PropTypes.number,
+      captionEmotionCount: PropTypes.number,
     }),
   };
 
@@ -140,9 +142,23 @@ class UserDetail extends Component {
                   <ListItem>
                     <ListItemText
                       className={classes.textCenter}
+                      primary="Caption Curated Count : "
+                    />
+                    <ListItemText primary={user.captionCuratedCount} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      className={classes.textCenter}
                       primary="Caption Edit Count : "
                     />
                     <ListItemText primary={user.captionEditCount} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText
+                      className={classes.textCenter}
+                      primary="Caption Emotion Count : "
+                    />
+                    <ListItemText primary={user.captionEmotionCount} />
                   </ListItem>
                   <ListItem
                     button

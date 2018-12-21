@@ -47,7 +47,13 @@ import {
 import { Q_GET_IMAGES } from '@/graphql/queries';
 import { M_EDIT_CAPTION } from '@/graphql/mutations';
 
-import EditCaption from '@/components/Form/EditCaption';
+import CaptionsMutations from '@/components/GraphQL/CaptionsMutations';
+
+import EditCaption from '@/components/Form/EditCaption/index';
+import CurateCaption from '@/components/Form/CurateCaption';
+import EmotionCaption from '@/components/Form/EmotionCaption';
+
+import StepperForm from './Stepper';
 
 @withStyles(theme => ({
   root: {
@@ -198,72 +204,131 @@ class ImageList extends Component {
 
   getChildRows = (row, rootRows) => (row ? row.captions : rootRows);
 
-  rowDetail = (captionEdit, refetch) => ({
-    row: { image_id: id, coco_url: coco, captions, height, width },
+  rowDetail = (captionsEntity, refetch) => ({
+    row: { image_id: id, obj_id: objId, url, captions },
   }) => {
     const { classes } = this.props;
 
-    const captionsModified = captions.map(caption => {
-      const captionEditEntity = captionEdit.find(
-        capt => capt.caption_id === caption.caption_id
-      );
+    const imageCaption = captionsEntity.find(capt => capt.image_id === id);
 
-      if (!captionEditEntity) {
+    const captionsModified = captions.map(caption => {
+      if (!imageCaption) {
         return caption;
       }
 
-      return { ...caption, id: captionEditEntity.text };
+      const captionEdit = imageCaption.captionEdit.find(
+        capt => capt.caption_id === caption.caption_id
+      );
+
+      if (!captionEdit) {
+        return caption;
+      }
+
+      return { ...caption, id: captionEdit.text };
     });
 
     return (
-      <Mutation mutation={M_EDIT_CAPTION}>
-        {editAction => (
+      <CaptionsMutations>
+        {({
+          curateCaption,
+          editCaption,
+          emotionCaption,
+          changeStepCaption,
+        }) => (
           <Card key={id} className={classes.card}>
             <CardMedia
               className={classes.cover}
               component="img"
-              style={{ height: height * 0.75, width: width * 0.75 }}
-              image={coco}
+              style={{ height: '75%', width: '75%' }}
+              image={url}
               alt={captionsModified[0].en}
               title={captionsModified[0].en}
             />
             <CardContent className={classes.content}>
-              <List>
-                {captionsModified.map((caption, idx) => (
-                  <Fragment key={caption.caption_id}>
-                    <ListItem>
-                      <ListItemAvatar>
-                        <Avatar className={classes[this.avatarColor[idx]]}>
-                          {caption.caption_id}
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={caption.id}
-                        secondary={caption.en}
-                      />
-                      <ListItemSecondaryAction>
-                        <EditCaption
-                          image={coco}
-                          imageHeight={height}
-                          imageWidth={width}
-                          caption={caption}
-                          action={editAction}
-                          refetch={refetch}
-                        />
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                    {idx !== captions.length - 1 && (
-                      <li>
-                        <Divider inset />
-                      </li>
-                    )}
-                  </Fragment>
-                ))}
+              <List style={{ maxWidth: '75%', margin: 'auto auto' }}>
+                <StepperForm
+                  id={id}
+                  objId={objId}
+                  refetch={refetch}
+                  changeStepCaption={changeStepCaption.mutation}
+                  curateForm={({
+                    back,
+                    next,
+                    stepperClasses,
+                    activeStep,
+                    steps,
+                  }) => (
+                    <CurateCaption
+                      image={url}
+                      objId={objId}
+                      imageId={id}
+                      parentClasses={classes}
+                      avatarColor={this.avatarColor}
+                      captionEdit={captionsModified}
+                      caption={imageCaption}
+                      action={curateCaption}
+                      refetch={refetch} /* stepper */
+                      handleBack={back}
+                      handleNext={next}
+                      stepperClasses={stepperClasses}
+                      activeStep={activeStep}
+                      steps={steps}
+                    />
+                  )}
+                  editForm={({
+                    back,
+                    next,
+                    stepperClasses,
+                    activeStep,
+                    steps,
+                  }) => (
+                    <EditCaption
+                      image={url}
+                      objId={objId}
+                      imageId={id}
+                      parentClasses={classes}
+                      avatarColor={this.avatarColor}
+                      caption={imageCaption}
+                      captionEdit={captionsModified}
+                      action={editCaption}
+                      refetch={refetch} /* stepper */
+                      handleBack={back}
+                      handleNext={next}
+                      stepperClasses={stepperClasses}
+                      activeStep={activeStep}
+                      steps={steps}
+                    />
+                  )}
+                  emotionForm={({
+                    back,
+                    next,
+                    stepperClasses,
+                    activeStep,
+                    steps,
+                  }) => (
+                    <EmotionCaption
+                      image={url}
+                      objId={objId}
+                      imageId={id}
+                      parentClasses={classes}
+                      avatarColor={this.avatarColor}
+                      caption={imageCaption}
+                      captionEdit={captionsModified}
+                      action={emotionCaption}
+                      refetch={refetch} /* stepper */
+                      handleBack={back}
+                      handleNext={next}
+                      stepperClasses={stepperClasses}
+                      activeStep={activeStep}
+                      steps={steps}
+                    />
+                  )}
+                />
               </List>
             </CardContent>
           </Card>
         )}
-      </Mutation>
+      </CaptionsMutations>
     );
   };
 
@@ -288,12 +353,15 @@ class ImageList extends Component {
           loading,
           data: {
             allImages = [],
-            _allImagesMeta = {
-              count: 0,
-            },
+            _allImagesMeta = { count: 0 },
             currentUser = {
+              obj_id: 0,
+              image_id: '',
+              step: 'none',
+              captionCuratedCount: 0,
               captionEditCount: 0,
-              captionEdit: [],
+              captionEmotionCount: 0,
+              captions: [],
             },
           },
           fetchMore,
@@ -342,7 +410,7 @@ class ImageList extends Component {
                 <TableHeaderRow />
                 <TableRowDetail
                   contentComponent={this.rowDetail(
-                    currentUser.captionEdit,
+                    currentUser.captions,
                     refetch
                   )}
                 />

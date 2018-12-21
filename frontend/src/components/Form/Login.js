@@ -113,7 +113,7 @@ class LoginForm extends Component {
                   setMessage({
                     message: 'Login Success!',
                     messageType: 'success',
-                    timeout: 1000,
+                    timeout: 350,
                     callback: () => {
                       setTimeout(() => {
                         setCookie('token', payload.data.login.accessToken, {

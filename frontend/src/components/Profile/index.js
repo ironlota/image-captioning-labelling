@@ -79,7 +79,7 @@ class Profile extends React.Component {
             fullWidth
           >
             <Tab label="Details" icon={<PersonPinIcon />} />
-            <Tab label={this.tabLabelCaption()} icon={<SpeakerNotesIcon />} />
+            {/* <Tab label={this.tabLabelCaption()} icon={<SpeakerNotesIcon />} /> */}
           </Tabs>
         </AppBar>
         {value === 0 && (
@@ -100,7 +100,7 @@ class Profile extends React.Component {
             <UserDetail />
           </Grid>
         )}
-        {value === 1 && <Captions />}
+        {/* {value === 1 && <Captions />} */}
       </div>
     );
   }

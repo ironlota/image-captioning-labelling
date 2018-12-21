@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  mutation editCaption($input: createEditCaption) {
-    editCaption(createEditCaption: $input) {
+  mutation curateCaption($input: createCurateCaption) {
+    curateCaption(createCurateCaption: $input) {
       captionEditCount
       captionCuratedCount
       captionEmotionCount
