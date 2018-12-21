@@ -7,6 +7,7 @@ export default gql`
       image_id
       height
       width
+      need_emotion
       captions {
         id
         en

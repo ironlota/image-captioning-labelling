@@ -218,7 +218,6 @@ export class UsersService {
       const data = await this.userModel.findOne({
         username: user.username,
       });
-
       const foundCaption = data.captions.find(capt => capt.obj_id === objId);
 
       foundCaption.step = status;

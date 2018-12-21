@@ -205,9 +205,17 @@ class ImageList extends Component {
   getChildRows = (row, rootRows) => (row ? row.captions : rootRows);
 
   rowDetail = (captionsEntity, refetch) => ({
-    row: { image_id: id, obj_id: objId, url, captions },
+    row: {
+      image_id: id,
+      obj_id: objId,
+      url,
+      captions,
+      need_emotion: needEmotion,
+    },
   }) => {
     const { classes } = this.props;
+
+    console.log(needEmotion);
 
     const imageCaption = captionsEntity.find(capt => capt.image_id === id);
 
@@ -249,6 +257,7 @@ class ImageList extends Component {
                 <StepperForm
                   id={id}
                   objId={objId}
+                  needEmotion={needEmotion}
                   refetch={refetch}
                   changeStepCaption={changeStepCaption.mutation}
                   curateForm={({

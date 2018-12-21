@@ -47,6 +47,8 @@ class VerticalLinearStepper extends React.Component {
     id: PropTypes.string,
     objId: PropTypes.number,
 
+    needEmotion: PropTypes.bool,
+
     refetch: PropTypes.func.isRequired,
     changeStepCaption: PropTypes.func.isRequired,
 
@@ -59,16 +61,24 @@ class VerticalLinearStepper extends React.Component {
     classes: {},
     activeStepCurated: 0,
     curatedCaptionStep: () => {},
+    needEmotion: true,
     id: '',
     objId: 0,
   };
 
   getSteps() {
-    return [
+    const { needEmotion } = this.props;
+
+    const defaultSteps = [
       'Curating (check the caption that needs editing)',
       'Editing',
-      'Create emotion',
     ];
+
+    if (needEmotion) {
+      return [...defaultSteps, 'Create emotion'];
+    }
+
+    return defaultSteps;
   }
 
   handleNext = () => {
