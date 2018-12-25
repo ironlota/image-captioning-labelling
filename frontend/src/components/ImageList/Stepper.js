@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
-
 import { withStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -12,21 +11,30 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
-@withStyles(theme => ({
-  root: {
-    width: '90%',
-  },
-  button: {
-    marginTop: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-  },
-  actionsContainer: {
-    marginBottom: theme.spacing.unit * 2,
-  },
-  resetContainer: {
-    padding: theme.spacing.unit * 3,
-  },
-}))
+import { Mobile, DesktopOrTablet } from '@/components/Responsive';
+
+@withStyles(
+  theme => ({
+    root: {
+      width: '100%',
+    },
+    rootMobile: {
+      maxWidth: 400,
+      flexGrow: 1,
+    },
+    button: {
+      marginTop: theme.spacing.unit,
+      marginRight: theme.spacing.unit,
+    },
+    actionsContainer: {
+      marginBottom: theme.spacing.unit * 2,
+    },
+    resetContainer: {
+      padding: theme.spacing.unit * 3,
+    },
+  }),
+  { withTheme: true }
+)
 @connect(
   ({ caption }, { id }) => ({
     activeStepCurated: caption.curatedCaption[id],
@@ -39,6 +47,7 @@ import Typography from '@material-ui/core/Typography';
 class VerticalLinearStepper extends React.Component {
   static propTypes = {
     classes: PropTypes.shape({}),
+    theme: PropTypes.shape({}),
 
     caption: PropTypes.shape({}).isRequired,
 
@@ -59,6 +68,7 @@ class VerticalLinearStepper extends React.Component {
 
   static defaultProps = {
     classes: {},
+    theme: {},
     activeStepCurated: 0,
     curatedCaptionStep: () => {},
     needEmotion: true,
@@ -177,47 +187,79 @@ class VerticalLinearStepper extends React.Component {
 
     return (
       <div className={classes.root}>
-        <Stepper activeStep={activeStepCurated} orientation="vertical">
-          {steps.map((label, index) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-              <StepContent>
-                {index === 0 &&
-                  curateForm({
-                    back: this.handleBack,
-                    next: this.handleNext,
-                    stepperClasses: classes,
-                    activeStep: activeStepCurated,
-                    steps,
-                  })}
-                {index === 1 &&
-                  editForm({
-                    back: this.handleBack,
-                    next: this.handleNext,
-                    stepperClasses: classes,
-                    activeStep: activeStepCurated,
-                    steps,
-                  })}
-                {index === 2 &&
-                  emotionForm({
-                    back: this.handleBack,
-                    next: this.handleNext,
-                    stepperClasses: classes,
-                    activeStep: activeStepCurated,
-                    steps,
-                  })}
-              </StepContent>
-            </Step>
-          ))}
-        </Stepper>
-        {activeStepCurated === steps.length && (
-          <Paper square elevation={0} className={classes.resetContainer}>
-            <Typography>All steps completed - you&apos;re finished</Typography>
-            <Button onClick={this.handleReset} className={classes.button}>
-              Reset
-            </Button>
-          </Paper>
-        )}
+        <DesktopOrTablet>
+          <Stepper activeStep={activeStepCurated} orientation="vertical">
+            {steps.map((label, index) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+                <StepContent>
+                  {index === 0 &&
+                    curateForm({
+                      back: this.handleBack,
+                      next: this.handleNext,
+                      stepperClasses: classes,
+                      activeStep: activeStepCurated,
+                      steps,
+                    })}
+                  {index === 1 &&
+                    editForm({
+                      back: this.handleBack,
+                      next: this.handleNext,
+                      stepperClasses: classes,
+                      activeStep: activeStepCurated,
+                      steps,
+                    })}
+                  {index === 2 &&
+                    emotionForm({
+                      back: this.handleBack,
+                      next: this.handleNext,
+                      stepperClasses: classes,
+                      activeStep: activeStepCurated,
+                      steps,
+                    })}
+                </StepContent>
+              </Step>
+            ))}
+          </Stepper>
+          {activeStepCurated === steps.length && (
+            <Paper square elevation={0} className={classes.resetContainer}>
+              <Typography>
+                All steps completed - you&apos;re finished
+              </Typography>
+              <Button onClick={this.handleReset} className={classes.button}>
+                Reset
+              </Button>
+            </Paper>
+          )}
+        </DesktopOrTablet>
+        <Mobile>
+          <div className={classes.rootMobile}>
+            {activeStepCurated === 0 &&
+              curateForm({
+                back: this.handleBack,
+                next: this.handleNext,
+                stepperClasses: classes,
+                activeStep: activeStepCurated,
+                steps,
+              })}
+            {activeStepCurated === 1 &&
+              editForm({
+                back: this.handleBack,
+                next: this.handleNext,
+                stepperClasses: classes,
+                activeStep: activeStepCurated,
+                steps,
+              })}
+            {activeStepCurated === 2 &&
+              emotionForm({
+                back: this.handleBack,
+                next: this.handleNext,
+                stepperClasses: classes,
+                activeStep: activeStepCurated,
+                steps,
+              })}
+          </div>
+        </Mobile>
       </div>
     );
   }

@@ -31,6 +31,8 @@ import EditIcon from '@material-ui/icons/Edit';
 
 import { TextField } from 'formik-material-ui';
 
+import redirect from '@/utils/redirect';
+
 @withStyles(theme => ({
   formField: {
     width: '100%',
@@ -124,7 +126,7 @@ class EditCaption extends Component {
         </IconButton>
         <Formik
           initialValues={{
-            text: '',
+            text: caption.id,
             caption_id: caption.caption_id,
             image_id: imageId,
             obj_id: objId,
@@ -149,17 +151,30 @@ class EditCaption extends Component {
                 });
               })
               .catch(err => {
-                const {
-                  statusCode,
-                  error,
-                  message,
-                } = err.graphQLErrors[0].message;
+                if (err) {
+                  const {
+                    statusCode,
+                    error,
+                    message,
+                  } = err.graphQLErrors[0].message;
 
-                setMessage({
-                  message: `[${statusCode}] ${error} - ${message}`,
-                  messageType: 'error',
-                  timeout: 1500,
-                });
+                  setMessage({
+                    message: `[${statusCode}] ${error} - ${message}`,
+                    messageType: 'error',
+                    timeout: 1500,
+                  });
+
+                  if (statusCode === 401) {
+                    redirect({}, '/login');
+                  }
+                } else {
+                  setMessage({
+                    message:
+                      'Failed to EDIT the image caption, please try again',
+                    messageType: 'error',
+                    timeout: 3000,
+                  });
+                }
 
                 setSubmitting(false);
               });
@@ -213,6 +228,7 @@ class EditCaption extends Component {
                     label="Caption"
                     helperText="New Caption"
                     margin="normal"
+                    multiline
                     className={classes.formField}
                     component={TextField}
                   />

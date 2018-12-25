@@ -20,6 +20,8 @@ import deepPurple from '@material-ui/core/colors/deepPurple';
 
 import { TextField } from 'formik-material-ui';
 
+import redirect from '@/utils/redirect';
+
 @withStyles(theme => ({
   formField: {
     width: '100%',
@@ -127,13 +129,31 @@ class EmotionCaption extends Component {
                   timeout: 1500,
                 });
               })
-              .catch(() => {
-                setMessage({
-                  message:
-                    'Failed to Create Emotion for image, please try again',
-                  messageType: 'error',
-                  timeout: 3000,
-                });
+              .catch(err => {
+                if (err) {
+                  const {
+                    statusCode,
+                    error,
+                    message,
+                  } = err.graphQLErrors[0].message;
+
+                  setMessage({
+                    message: `[${statusCode}] ${error} - ${message}`,
+                    messageType: 'error',
+                    timeout: 1500,
+                  });
+
+                  if (statusCode === 401) {
+                    redirect({}, '/login');
+                  }
+                } else {
+                  setMessage({
+                    message:
+                      'Failed to Create Emotion for image, please try again',
+                    messageType: 'error',
+                    timeout: 3000,
+                  });
+                }
 
                 setSubmitting(false);
               });
@@ -157,6 +177,7 @@ class EmotionCaption extends Component {
                 label="Happy Caption"
                 helperText="Happy Caption"
                 margin="normal"
+                multiline
                 className={classes.formField}
                 component={TextField}
               />
@@ -167,6 +188,7 @@ class EmotionCaption extends Component {
                 label="Sad Caption"
                 helperText="Sad Caption"
                 margin="normal"
+                multiline
                 className={classes.formField}
                 component={TextField}
               />
@@ -177,6 +199,7 @@ class EmotionCaption extends Component {
                 label="Angry Caption"
                 helperText="Angry Caption"
                 margin="normal"
+                multiline
                 className={classes.formField}
                 component={TextField}
               />

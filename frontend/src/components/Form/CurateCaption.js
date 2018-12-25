@@ -9,10 +9,15 @@ import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 import { Checkbox } from 'formik-material-ui';
+
+import { DesktopOrTablet } from '@/components/Responsive';
+
+import redirect from '@/utils/redirect';
 
 @connect(
   () => ({}),
@@ -87,7 +92,11 @@ class CurateCaption extends Component {
             curateCaptionAction
               .mutation({
                 variables: {
-                  input: { obj_id: objId, image_id: imageId, curatedCaptions },
+                  input: {
+                    obj_id: objId,
+                    image_id: imageId,
+                    curatedCaptions,
+                  },
                 },
               })
               .then(() => {
@@ -101,12 +110,30 @@ class CurateCaption extends Component {
                   timeout: 3000,
                 });
               })
-              .catch(() => {
-                setMessage({
-                  message: 'Failed to CURATE the image, please try again',
-                  messageType: 'error',
-                  timeout: 3000,
-                });
+              .catch(err => {
+                if (err) {
+                  const {
+                    statusCode,
+                    error,
+                    message,
+                  } = err.graphQLErrors[0].message;
+
+                  setMessage({
+                    message: `[${statusCode}] ${error} - ${message}`,
+                    messageType: 'error',
+                    timeout: 1500,
+                  });
+
+                  if (statusCode === 401) {
+                    redirect({}, '/login');
+                  }
+                } else {
+                  setMessage({
+                    message: 'Failed to CURATE the image, please try again',
+                    messageType: 'error',
+                    timeout: 3000,
+                  });
+                }
 
                 setSubmitting(false);
               });
@@ -122,13 +149,17 @@ class CurateCaption extends Component {
                     setFieldValue(capt.caption_id, !values[capt.caption_id])
                   }
                 >
-                  <ListItemAvatar>
-                    <Avatar className={parentClasses[avatarColor[idx]]}>
-                      {capt.caption_id}
-                    </Avatar>
-                  </ListItemAvatar>
+                  <DesktopOrTablet>
+                    <ListItemAvatar className={parentClasses.avatar}>
+                      <Avatar className={parentClasses[avatarColor[idx]]}>
+                        {capt.caption_id}
+                      </Avatar>
+                    </ListItemAvatar>
+                  </DesktopOrTablet>
                   <ListItemText primary={capt.id} secondary={capt.en} />
-                  <Field name={capt.caption_id} component={Checkbox} />
+                  <ListItemSecondaryAction>
+                    <Field name={capt.caption_id} component={Checkbox} />
+                  </ListItemSecondaryAction>
                 </ListItem>
               ))}
               <div className={stepperClasses.actionsContainer}>
