@@ -347,6 +347,7 @@ class ImageList extends Component {
         query={Q_GET_IMAGES}
         variables={{ skip: apolloArgs.page * apolloArgs.limit, ...apolloArgs }}
         errorPolicy="all"
+        fetchPolicy="cache-and-network"
         notifyOnNetworkStatusChange
       >
         {({

@@ -7,20 +7,7 @@ export default gql`
         image_id
         obj_id
         step
-        captionEmotion {
-          sad
-          happy
-          angry
-        }
-        captionEdit {
-          caption_id
-          text
-        }
-        curatedCaptions
       }
-      captionEditCount
-      captionCuratedCount
-      captionEmotionCount
     }
   }
 `;

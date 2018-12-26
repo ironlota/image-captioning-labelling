@@ -4,7 +4,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGuard } from '../shared/auth/auth.guard';
 import { User as UserDecorator } from '../shared/auth/auth.decorator';
 
-import { User, Caption } from './graphql/users.graphql.schema';
+import { User } from './graphql/users.graphql.schema';
 import { User as UserEntity } from './interfaces/user.interface';
 import { UsersService } from './users.service';
 
@@ -95,5 +95,14 @@ export class UsersResolvers {
     @Args('status') status: string,
   ): Promise<User> {
     return await this.usersService.changeStep(user, objId, status);
+  }
+
+  @Mutation('changeRange')
+  @UseGuards(JwtAuthGuard)
+  async changeRange(
+    @UserDecorator() user: UserEntity,
+    @Args('range') range: string,
+  ): Promise<User> {
+    return await this.usersService.changeRange(user, range);
   }
 }

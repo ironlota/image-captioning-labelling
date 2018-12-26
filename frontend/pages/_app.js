@@ -22,7 +22,6 @@ class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
     return {
       pageProps: {
-        // Call page-level getInitialProps
         ...(Component.getInitialProps
           ? await Component.getInitialProps(ctx)
           : {}),
@@ -49,7 +48,7 @@ class MyApp extends App {
     return (
       <Container>
         <Head>
-          <title>MSCOCO DataSet</title>
+          <title>Indonesian Image Captioning DataSet</title>
         </Head>
         <JssProvider
           registry={this.pageContext.sheetsRegistry}

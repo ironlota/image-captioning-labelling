@@ -13,6 +13,7 @@ type Mutation {
   curateCaption(createCurateCaption: createCurateCaption): User
   emotionCaption(createEmotionCaption: createEmotionCaption): User
   changeStep(objId: Int!, status: String!): User
+  changeRange(range: String!): User
 }
 
 input createCurateCaption {
@@ -67,6 +68,7 @@ type UserCaption {
 type User {
   username: String
   email: String
+  range: String
   captionEditCount: Int
   captionCuratedCount: Int
   captionEmotionCount: Int

@@ -42,6 +42,16 @@ export const UsersSchema = new mongoose.Schema(
     captionEditCount: { type: Number, default: 0 },
     captionCuratedCount: { type: Number, default: 0 },
     captionEmotionCount: { type: Number, default: 0 },
+    range: {
+      type: String,
+      default: 'all',
+      validate: {
+        validator(v) {
+          return /^(((\d*)-(\d*))|(all))/g.test(v);
+        },
+        message: props => `${props.value} is not a valid range!`,
+      },
+    },
     captions: { type: [Caption], default: [] },
     email: { type: String, required: true },
     password: { type: String, required: true },

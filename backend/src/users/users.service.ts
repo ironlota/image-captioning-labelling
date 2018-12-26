@@ -5,6 +5,7 @@ import {
   Injectable,
   UnauthorizedException,
   InternalServerErrorException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectConfig, ConfigService } from 'nestjs-config';
 import { InjectModel } from '@nestjs/mongoose';
@@ -208,7 +209,7 @@ export class UsersService {
       return _data;
     } catch (e) {
       throw new UnauthorizedException(
-        'Complete previous step before continouing!',
+        'Complete previous step before continuing!',
       );
     }
   }
@@ -226,7 +227,32 @@ export class UsersService {
 
       return _data;
     } catch (e) {
-      throw new UnauthorizedException('Cannot override step');
+      throw new UnauthorizedException('You are not allowed to override step');
+    }
+  }
+
+  async changeRange(user: User, range: string): Promise<User> {
+    try {
+      const userData = await this.userModel.findOne({
+        username: user.username,
+      });
+
+      if (/^(((\d*)-(\d*))|(all))/g.test(range)) {
+        userData.range = range;
+
+        const _data = await userData.save();
+
+        return _data;
+      } else {
+        throw new BadRequestException();
+      }
+    } catch (e) {
+      if (e.response.statusCode === 400) {
+        throw new BadRequestException(
+          `Input 'range' failed, you need to input in these format ['all', 'start-end']`,
+        );
+      }
+      throw new UnauthorizedException('You are not allowed to change range');
     }
   }
 }

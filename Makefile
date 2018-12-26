@@ -1,14 +1,14 @@
 run-backend:
-	cd backend && yarn start:dev
+	cd backend && npm run start:dev
 
 run-frontend:
-	cd frontend && yarn dev
+	cd frontend && npm run dev
 
 install-frontend:
-	cd frontend && yarn
+	cd frontend && npm install
 
 install-backend:
-	cd backend && yarn
+	cd backend && npm install
 
 install:
 	make install-frontend

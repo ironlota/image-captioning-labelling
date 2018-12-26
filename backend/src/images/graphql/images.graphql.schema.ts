@@ -19,10 +19,6 @@ export class Meta {
   count?: number;
 }
 
-// export abstract class IMutation {
-//   abstract createCat(createCatInput?: CreateCatInput): Cat | Promise<Cat>;
-// }
-
 export abstract class IQuery {
   abstract allImages(
     page?: number,
@@ -36,7 +32,3 @@ export abstract class IQuery {
 
   abstract temp__(): boolean | Promise<boolean>;
 }
-
-// export abstract class ISubscription {
-//   abstract catCreated(): Cat | Promise<Cat>;
-// }

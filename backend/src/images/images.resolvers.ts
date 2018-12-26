@@ -1,14 +1,12 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
-// import { PubSub } from 'graphql-subscriptions';
 
 import { JwtAuthGuard } from '../shared/auth/auth.guard';
 import { User as UserEntity } from '../users/interfaces/user.interface';
 import { Image } from './graphql/images.graphql.schema';
 import { ImagesService } from './images.service';
-// import { CreateImageDto } from './dto/create-image.dto';
 
-// const pubSub = new PubSub();
+import { User as UserDecorator } from '../shared/auth/auth.decorator';
 
 @Resolver('Image')
 export class ImagesResolvers {
@@ -17,11 +15,12 @@ export class ImagesResolvers {
   @Query()
   @UseGuards(JwtAuthGuard)
   async allImages(
+    @UserDecorator() user: UserEntity,
     @Args('skip') skip?: number,
     @Args('limit') limit?: number,
     @Args('search') search?: string,
   ) {
-    return await this.imagesService.findAll(skip, limit, search);
+    return await this.imagesService.findAll(user, skip, limit, search);
   }
 
   @Query('_allImagesMeta')
@@ -41,18 +40,4 @@ export class ImagesResolvers {
   async findImgUrlsById(@Args('ids') ids: [number]): Promise<object> {
     return await this.imagesService.findCocoUrlsFromImageIDs(ids);
   }
-
-  // @Mutation('createCat')
-  // async create(@Args('createCatInput') args: CreateCatDto): Promise<Cat> {
-  //   const createdCat = await this.imagesService.create(args);
-  //   // pubSub.publish('catCreated', { catCreated: createdCat });
-  //   return createdCat;
-  // }
-
-  // @Subscription('onChangeImage')
-  // catCreated() {
-  //   return {
-  //     subscribe: () => pubSub.asyncIterator('onChangeImage'),
-  //   };
-  // }
 }

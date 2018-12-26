@@ -9,7 +9,7 @@ import RegisterForm from '@/components/Form/Register';
 import checkLoggedIn from '@/utils/checkLoggedIn';
 import redirect from '@/utils/redirect';
 
-import { M_REGISTER, M_LOGIN } from '@/graphql/mutations';
+import { M_REGISTER } from '@/graphql/mutations';
 
 class Register extends Component {
   static async getInitialProps(context) {

@@ -7,14 +7,6 @@ type Query {
   findImgUrlsByIds(ids: [ID!]): [Image]
 }
 
-# type Mutation {
-#   createCat(createCatInput: CreateCatInput): Cat
-# }
-
-# type Subscription {
-#   catCreated: Cat
-# }
-
 type Caption {
   en: String
   id: String
@@ -32,8 +24,3 @@ type Image {
   width: Int
   date_captured: DateTime
 }
-
-# input CreateCatInput {
-#   name: String
-#   age: Int
-# }

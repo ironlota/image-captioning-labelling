@@ -125,7 +125,7 @@ class MenuAppBar extends React.Component {
                   color="inherit"
                   className={classes.grow}
                 >
-                  MSCOCO Labelling
+                  Indonesian Image Captioning
                 </Typography>
                 {!!user.username && (
                   <div>

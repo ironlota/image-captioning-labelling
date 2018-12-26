@@ -6,24 +6,28 @@ import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 
+import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 import PersonOutlined from '@material-ui/icons/PersonOutlined';
 import EditIcon from '@material-ui/icons/Edit';
 
 import purple from '@material-ui/core/colors/purple';
 
-import { M_CHANGE_PASSWORD } from '@/graphql/mutations';
+// import { M_CHANGE_PASSWORD } from '@/graphql/mutations';
+import UserMutations from '@/components/GraphQL/UserMutations';
 
 import EditPassword from '@/components/Form/EditPassword';
+import EditRange from '@/components/Form/EditRange';
 
 @withStyles(theme => ({
   avatar: {
@@ -50,11 +54,20 @@ import EditPassword from '@/components/Form/EditPassword';
   gridForm: {
     margin: '0 auto',
   },
+  itemLabel: {
+    paddingRight: '40px',
+  },
   demo: {
     backgroundColor: theme.palette.background.paper,
   },
   title: {
     margin: `${theme.spacing.unit * 4}px 0 ${theme.spacing.unit * 2}px`,
+  },
+  paddingListItemText: {
+    padding: '12px 0',
+  },
+  noMargin: {
+    margin: 0,
   },
   '@media (max-width: 786px)': {
     card: {
@@ -90,40 +103,33 @@ class UserDetail extends Component {
 
   state = {
     openEditPassword: false,
+    openEditRange: false,
   };
 
-  handleEditPassword = open => {
+  handleDialog = state => open => {
     this.setState({
-      openEditPassword: open,
+      [state]: open,
     });
-  };
-
-  handleExpandClick = () => {
-    this.setState(state => ({ expanded: !state.expanded }));
-  };
-
-  avatarComponent = () => {
-    const { classes } = this.props;
-
-    return (
-      <Avatar aria-label="Recipe" className={classes.avatar}>
-        R
-      </Avatar>
-    );
   };
 
   render() {
     const { classes, user } = this.props;
-    const { openEditPassword } = this.state;
+    const { openEditPassword, openEditRange } = this.state;
 
     return (
-      <Mutation mutation={M_CHANGE_PASSWORD}>
-        {editPasswordAction => (
+      <UserMutations>
+        {({ changePassword, changeRange }) => (
           <Grid item xs={12} md={12} className={classes.gridForm}>
             <EditPassword
-              action={editPasswordAction}
+              action={changePassword.mutation}
               open={openEditPassword}
-              toggleDialog={this.handleEditPassword}
+              toggleDialog={this.handleDialog('openEditPassword')}
+            />
+            <EditRange
+              action={changeRange.mutation}
+              open={openEditRange}
+              toggleDialog={this.handleDialog('openEditRange')}
+              // refetch={getImages.query.refetch}
             />
             <Card className={classes.card}>
               <CardContent>
@@ -133,48 +139,85 @@ class UserDetail extends Component {
                   </Avatar>
                 </CardActions>
                 <List>
-                  <ListItem>
+                  <ListItem className={classes.paddingListItemText}>
                     <ListItemText
                       className={classes.textCenter}
                       primary={`${user.firstName} ${user.lastName}`}
                     />
                   </ListItem>
-                  <ListItem>
+                  <ListItem
+                    className={classes.paddingListItemText}
+                    button
+                    onClick={() => this.handleDialog('openEditRange')(true)}
+                  >
                     <ListItemText
-                      className={classes.textCenter}
-                      primary="Caption Curated Count : "
+                      primary={`Image Edit Range (${user.range})`}
+                      className={classes.itemLabel}
                     />
-                    <ListItemText primary={user.captionCuratedCount} />
+                    <ListItemSecondaryAction>
+                      <ListItemIcon className={classes.noMargin}>
+                        <EditIcon />
+                      </ListItemIcon>
+                    </ListItemSecondaryAction>
+                    {/* <ListItemText primary={user.captionEditCount} /> */}
                   </ListItem>
-                  <ListItem>
+                  <ListItem className={classes.paddingListItemText}>
                     <ListItemText
-                      className={classes.textCenter}
-                      primary="Caption Edit Count : "
+                      className={classes.itemLabel}
+                      primary="Caption Curated Count"
                     />
-                    <ListItemText primary={user.captionEditCount} />
+                    <ListItemSecondaryAction>
+                      <Typography variant="subtitle1">
+                        {user.captionCuratedCount}
+                      </Typography>
+                    </ListItemSecondaryAction>
+                    {/* <ListItemText primary={user.captionCuratedCount} /> */}
                   </ListItem>
-                  <ListItem>
+                  <ListItem className={classes.paddingListItemText}>
                     <ListItemText
-                      className={classes.textCenter}
-                      primary="Caption Emotion Count : "
+                      className={classes.itemLabel}
+                      primary="Caption Edit Count"
                     />
-                    <ListItemText primary={user.captionEmotionCount} />
+                    <ListItemSecondaryAction>
+                      <Typography variant="subtitle1">
+                        {user.captionEditCount}
+                      </Typography>
+                    </ListItemSecondaryAction>
+                    {/* <ListItemText primary={user.captionEditCount} /> */}
+                  </ListItem>
+                  <ListItem className={classes.paddingListItemText}>
+                    <ListItemText
+                      className={classes.itemLabel}
+                      primary="Caption Emotion Count"
+                    />
+                    <ListItemSecondaryAction>
+                      <Typography variant="subtitle1">
+                        {user.captionEmotionCount}
+                      </Typography>
+                    </ListItemSecondaryAction>
+                    {/* <ListItemText primary={user.captionEmotionCount} /> */}
                   </ListItem>
                   <ListItem
+                    className={classes.paddingListItemText}
                     button
-                    onClick={() => this.handleEditPassword(true)}
+                    onClick={() => this.handleDialog('openEditPassword')(true)}
                   >
-                    <ListItemText primary="Edit Password" />
-                    <ListItemIcon>
-                      <EditIcon />
-                    </ListItemIcon>
+                    <ListItemText
+                      className={classes.itemLabel}
+                      primary="Edit Password"
+                    />
+                    <ListItemSecondaryAction>
+                      <ListItemIcon className={classes.noMargin}>
+                        <EditIcon />
+                      </ListItemIcon>
+                    </ListItemSecondaryAction>
                   </ListItem>
                 </List>
               </CardContent>
             </Card>
           </Grid>
         )}
-      </Mutation>
+      </UserMutations>
     );
   }
 }

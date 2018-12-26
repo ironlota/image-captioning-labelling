@@ -233,6 +233,9 @@ class VerticalLinearStepper extends React.Component {
           )}
         </DesktopOrTablet>
         <Mobile>
+          <Typography variant="title">
+            {`${activeStepCurated + 1}. ${steps[activeStepCurated]}`}
+          </Typography>
           <div className={classes.rootMobile}>
             {activeStepCurated === 0 &&
               curateForm({

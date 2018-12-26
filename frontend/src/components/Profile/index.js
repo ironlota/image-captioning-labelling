@@ -12,9 +12,9 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
 import PersonPinIcon from '@material-ui/icons/PersonPin';
-import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
+// import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
 
-import Captions from './Captions';
+// import Captions from './Captions';
 import UserDetail from './UserDetail';
 
 @withStyles(theme => ({

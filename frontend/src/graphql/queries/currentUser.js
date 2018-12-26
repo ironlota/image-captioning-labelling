@@ -8,6 +8,7 @@ export default gql`
       firstName
       lastName
       lastLogin
+      range
       captionEditCount
       captionCuratedCount
       captionEmotionCount

@@ -21,11 +21,9 @@ import deepPurple from '@material-ui/core/colors/deepPurple';
 
 import { TextField } from 'formik-material-ui';
 
-@withStyles(theme => ({
+@withStyles({
   formField: {
     width: '100%',
-    // marginLeft: theme.spacing.unit,
-    // marginRight: theme.spacing.unit,
   },
   orangeAvatar: {
     margin: 10,
@@ -44,7 +42,7 @@ import { TextField } from 'formik-material-ui';
     margin: 'auto auto',
     objectFit: 'cover',
   },
-}))
+})
 @withMobileDialog()
 @connect(
   state => ({
@@ -131,17 +129,25 @@ class EditPassword extends Component {
                 });
               })
               .catch(err => {
-                const {
-                  statusCode,
-                  error,
-                  message,
-                } = err.graphQLErrors[0].message;
+                if (err) {
+                  const {
+                    statusCode,
+                    error,
+                    message,
+                  } = err.graphQLErrors[0].message;
 
-                setMessage({
-                  message: `[${statusCode}] ${error} - ${message}`,
-                  messageType: 'error',
-                  timeout: 1500,
-                });
+                  setMessage({
+                    message: `[${statusCode}] ${error} - ${message}`,
+                    messageType: 'error',
+                    timeout: 1500,
+                  });
+                } else {
+                  setMessage({
+                    message: 'Failed to change password, please try again',
+                    messageType: 'error',
+                    timeout: 3000,
+                  });
+                }
 
                 setSubmitting(false);
               });
