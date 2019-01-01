@@ -2,6 +2,7 @@ import M_REGISTER from './register';
 import M_LOGIN from './login';
 import M_CHANGE_PASSWORD from './changePassword';
 import M_CHANGE_RANGE from './changeRange';
+import M_CHANGE_EMOTION from './changeEmotion';
 
 import M_CURATE_CAPTION from './curateCaption';
 import M_EDIT_CAPTION from './editCaption';
@@ -17,4 +18,5 @@ export {
   M_EMOTION_CAPTION,
   M_CHANGE_STEP_CAPTION,
   M_CHANGE_RANGE,
+  M_CHANGE_EMOTION,
 };

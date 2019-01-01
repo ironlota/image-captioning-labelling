@@ -1,5 +1,7 @@
 import * as mongoose from 'mongoose';
 
+import { CAPTION_STEP, USER_SELECTED_EMOTION } from '../users.constant';
+
 export const CaptionEditSchema = new mongoose.Schema({
   text: { type: String },
   caption_id: { type: Number },
@@ -16,7 +18,7 @@ export const Caption = new mongoose.Schema({
   image_id: { type: String },
   step: {
     type: String,
-    enum: ['none', 'curated', 'edited', 'emotion'],
+    enum: CAPTION_STEP,
     default: 'none',
   },
   curatedCaptions: { type: [Number], default: [] },
@@ -51,6 +53,11 @@ export const UsersSchema = new mongoose.Schema(
         },
         message: props => `${props.value} is not a valid range!`,
       },
+    },
+    selectedEmotion: {
+      type: String,
+      enum: USER_SELECTED_EMOTION,
+      default: 'all',
     },
     captions: { type: [Caption], default: [] },
     email: { type: String, required: true },

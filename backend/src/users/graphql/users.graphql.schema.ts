@@ -6,6 +6,7 @@ export class User {
   @Exclude() password?: string;
   step?: number;
   range?: string;
+  selectedEmotion?: string;
   captionEditCount?: number;
   captionCuratedCount?: number;
   captionEmotionCount?: number;

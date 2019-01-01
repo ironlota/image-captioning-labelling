@@ -14,6 +14,7 @@ type Mutation {
   emotionCaption(createEmotionCaption: createEmotionCaption): User
   changeStep(objId: Int!, status: String!): User
   changeRange(range: String!): User
+  changeEmotion(emotion: String!): User
 }
 
 input createCurateCaption {
@@ -69,6 +70,7 @@ type User {
   username: String
   email: String
   range: String
+  selectedEmotion: String
   captionEditCount: Int
   captionCuratedCount: Int
   captionEmotionCount: Int

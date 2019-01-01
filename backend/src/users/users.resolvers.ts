@@ -105,4 +105,13 @@ export class UsersResolvers {
   ): Promise<User> {
     return await this.usersService.changeRange(user, range);
   }
+
+  @Mutation('changeEmotion')
+  @UseGuards(JwtAuthGuard)
+  async changeEmotion(
+    @UserDecorator() user: UserEntity,
+    @Args('emotion') emotion: string,
+  ): Promise<User> {
+    return await this.usersService.changeEmotion(user, emotion);
+  }
 }

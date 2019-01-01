@@ -17,6 +17,8 @@ import { EditCaptionDto } from './dto/edit-caption.dto';
 import { CurateCaptionDto } from './dto/curate-caption.dto';
 import { EmotionCaptionDto } from './dto/emotion-caption.dto';
 
+import { USER_SELECTED_EMOTION } from './users.constant';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -253,6 +255,31 @@ export class UsersService {
         );
       }
       throw new UnauthorizedException('You are not allowed to change range');
+    }
+  }
+
+  async changeEmotion(user: User, emotion: string): Promise<User> {
+    try {
+      const userData = await this.userModel.findOne({
+        username: user.username,
+      });
+
+      if (USER_SELECTED_EMOTION.includes(emotion)) {
+        userData.selectedEmotion = emotion;
+
+        const _data = await userData.save();
+
+        return _data;
+      } else {
+        throw new BadRequestException();
+      }
+    } catch (e) {
+      if (e.response.statusCode === 400) {
+        throw new BadRequestException(
+          `Input 'emotion' failed, you need to input in these format ['all', 'happy', 'sad', 'angry']`,
+        );
+      }
+      throw new UnauthorizedException('You are not allowed to change emotion');
     }
   }
 }

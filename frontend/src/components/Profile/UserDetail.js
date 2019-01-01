@@ -28,6 +28,7 @@ import UserMutations from '@/components/GraphQL/UserMutations';
 
 import EditPassword from '@/components/Form/EditPassword';
 import EditRange from '@/components/Form/EditRange';
+import EditEmotion from '@/components/Form/EditEmotion';
 
 @withStyles(theme => ({
   avatar: {
@@ -104,6 +105,7 @@ class UserDetail extends Component {
   state = {
     openEditPassword: false,
     openEditRange: false,
+    openEditEmotion: false,
   };
 
   handleDialog = state => open => {
@@ -114,11 +116,11 @@ class UserDetail extends Component {
 
   render() {
     const { classes, user } = this.props;
-    const { openEditPassword, openEditRange } = this.state;
+    const { openEditPassword, openEditRange, openEditEmotion } = this.state;
 
     return (
       <UserMutations>
-        {({ changePassword, changeRange }) => (
+        {({ changePassword, changeRange, changeEmotion }) => (
           <Grid item xs={12} md={12} className={classes.gridForm}>
             <EditPassword
               action={changePassword.mutation}
@@ -129,7 +131,11 @@ class UserDetail extends Component {
               action={changeRange.mutation}
               open={openEditRange}
               toggleDialog={this.handleDialog('openEditRange')}
-              // refetch={getImages.query.refetch}
+            />
+            <EditEmotion
+              action={changeEmotion.mutation}
+              open={openEditEmotion}
+              toggleDialog={this.handleDialog('openEditEmotion')}
             />
             <Card className={classes.card}>
               <CardContent>
@@ -145,6 +151,22 @@ class UserDetail extends Component {
                       primary={`${user.firstName} ${user.lastName}`}
                     />
                   </ListItem>
+
+                  <ListItem
+                    className={classes.paddingListItemText}
+                    button
+                    onClick={() => this.handleDialog('openEditPassword')(true)}
+                  >
+                    <ListItemText
+                      className={classes.itemLabel}
+                      primary="Edit Password"
+                    />
+                    <ListItemSecondaryAction>
+                      <ListItemIcon className={classes.noMargin}>
+                        <EditIcon />
+                      </ListItemIcon>
+                    </ListItemSecondaryAction>
+                  </ListItem>
                   <ListItem
                     className={classes.paddingListItemText}
                     button
@@ -152,6 +174,22 @@ class UserDetail extends Component {
                   >
                     <ListItemText
                       primary={`Image Edit Range (${user.range})`}
+                      className={classes.itemLabel}
+                    />
+                    <ListItemSecondaryAction>
+                      <ListItemIcon className={classes.noMargin}>
+                        <EditIcon />
+                      </ListItemIcon>
+                    </ListItemSecondaryAction>
+                    {/* <ListItemText primary={user.captionEditCount} /> */}
+                  </ListItem>
+                  <ListItem
+                    className={classes.paddingListItemText}
+                    button
+                    onClick={() => this.handleDialog('openEditEmotion')(true)}
+                  >
+                    <ListItemText
+                      primary={`Selected Emotion (${user.selectedEmotion})`}
                       className={classes.itemLabel}
                     />
                     <ListItemSecondaryAction>
@@ -196,21 +234,6 @@ class UserDetail extends Component {
                       </Typography>
                     </ListItemSecondaryAction>
                     {/* <ListItemText primary={user.captionEmotionCount} /> */}
-                  </ListItem>
-                  <ListItem
-                    className={classes.paddingListItemText}
-                    button
-                    onClick={() => this.handleDialog('openEditPassword')(true)}
-                  >
-                    <ListItemText
-                      className={classes.itemLabel}
-                      primary="Edit Password"
-                    />
-                    <ListItemSecondaryAction>
-                      <ListItemIcon className={classes.noMargin}>
-                        <EditIcon />
-                      </ListItemIcon>
-                    </ListItemSecondaryAction>
                   </ListItem>
                 </List>
               </CardContent>

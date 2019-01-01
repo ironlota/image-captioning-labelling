@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 
+import capitalize from 'lodash/capitalize';
+import isEmpty from 'lodash/isEmpty';
+
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
 
@@ -47,7 +50,7 @@ import redirect from '@/utils/redirect';
   },
 }))
 @connect(
-  () => ({}),
+  ({ user }) => ({ user }),
   ({ message: { setMessage } }) => ({
     setMessage,
   })
@@ -73,12 +76,64 @@ class EmotionCaption extends Component {
     handleNext: PropTypes.func.isRequired,
     steps: PropTypes.arrayOf(PropTypes.string).isRequired,
 
+    user: PropTypes.shape({}).isRequired,
     setMessage: PropTypes.func.isRequired,
+  };
+
+  FieldForm = name => {
+    const { classes } = this.props;
+
+    return (
+      <Field
+        id={`${name}-field`}
+        name={name}
+        type="text"
+        label={`${capitalize(name)} Caption`}
+        helperText={`${capitalize(
+          name
+        )} caption must be longer than 6 characters`}
+        margin="normal"
+        multiline
+        className={classes.formField}
+        component={TextField}
+      />
+    );
+  };
+
+  renderFieldForm = selectedEmotion => {
+    if (selectedEmotion === 'all') {
+      return (
+        <Fragment>
+          {this.FieldForm('happy')}
+          {this.FieldForm('sad')}
+          {this.FieldForm('angry')}
+        </Fragment>
+      );
+    }
+
+    return this.FieldForm(selectedEmotion);
+  };
+
+  validateForm = selectedEmotion => {
+    const validationSchema = Yup.string()
+      .min(6, 'Caption must be longer than 6 characters!')
+      .required('Caption is required!');
+
+    if (selectedEmotion === 'all') {
+      return {
+        happy: validationSchema,
+        sad: validationSchema,
+        angry: validationSchema,
+      };
+    }
+
+    return {
+      [selectedEmotion]: validationSchema,
+    };
   };
 
   render() {
     const {
-      classes,
       parentClasses,
       avatarColor,
       objId,
@@ -86,6 +141,9 @@ class EmotionCaption extends Component {
       action: emotionCaptionAction,
       caption,
       captionEdit,
+
+      // redux
+      user,
       setMessage,
 
       // stepper
@@ -96,25 +154,31 @@ class EmotionCaption extends Component {
       steps,
     } = this.props;
 
+    let initialValues = {
+      image_id: imageId,
+      obj_id: objId,
+      sad: '',
+      angry: '',
+      happy: '',
+    };
+
+    if (caption && !isEmpty(caption.captionEmotion)) {
+      initialValues = { ...initialValues, ...caption.captionEmotion };
+
+      Object.keys(initialValues).forEach(key => {
+        if (!initialValues[key]) {
+          initialValues[key] = '';
+        }
+      });
+    }
+
     return (
       <Fragment>
         <Formik
-          initialValues={{
-            image_id: imageId,
-            obj_id: objId,
-            ...(caption ? caption.captionEmotion : {}),
-          }}
-          validationSchema={Yup.object().shape({
-            happy: Yup.string()
-              .min(6, 'Caption must be longer than 6 characters!')
-              .required('Caption is required!'),
-            sad: Yup.string()
-              .min(6, 'Caption must be longer than 6 characters!')
-              .required('Caption is required!'),
-            angry: Yup.string()
-              .min(6, 'Caption must be longer than 6 characters!')
-              .required('Caption is required!'),
-          })}
+          initialValues={initialValues}
+          validationSchema={Yup.object().shape(
+            this.validateForm(user.selectedEmotion || 'all')
+          )}
           onSubmit={({ __typename, ...values }, { setSubmitting }) => {
             emotionCaptionAction
               .mutation({ variables: { input: values } })
@@ -170,39 +234,7 @@ class EmotionCaption extends Component {
                   <ListItemText primary={capt.id} secondary={capt.en} />
                 </ListItem>
               ))}
-              <Field
-                id="happy-field"
-                name="happy"
-                type="text"
-                label="Happy Caption"
-                helperText="Happy Caption"
-                margin="normal"
-                multiline
-                className={classes.formField}
-                component={TextField}
-              />
-              <Field
-                id="sad-field"
-                name="sad"
-                type="text"
-                label="Sad Caption"
-                helperText="Sad Caption"
-                margin="normal"
-                multiline
-                className={classes.formField}
-                component={TextField}
-              />
-              <Field
-                id="angry-field"
-                name="angry"
-                type="text"
-                label="Angry Caption"
-                helperText="Angry Caption"
-                margin="normal"
-                multiline
-                className={classes.formField}
-                component={TextField}
-              />
+              {this.renderFieldForm(user.selectedEmotion || 'all')}
               <div className={stepperClasses.actionsContainer}>
                 {isSubmitting && <LinearProgress />}
                 <div>

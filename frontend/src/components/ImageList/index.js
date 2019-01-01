@@ -2,6 +2,7 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { Query } from 'react-apollo';
+import { connect } from 'react-redux';
 
 import debounce from 'lodash/debounce';
 
@@ -103,9 +104,20 @@ import StepperForm from './Stepper';
     },
   },
 }))
+@connect(
+  state => ({
+    user: state.user,
+  }),
+  ({ message: { setMessage }, user: { setUser } }) => ({
+    setMessage,
+    setUser,
+  })
+)
 class ImageList extends Component {
   static propTypes = {
     classes: PropTypes.shape({}).isRequired,
+
+    user: PropTypes.shape({}).isRequired,
   };
 
   defaultApolloArgs = {
@@ -121,6 +133,10 @@ class ImageList extends Component {
     'pinkAvatar',
     'greenAvatar',
   ];
+
+  IMAGE_DOCUMENTS = process.env.IMAGE_DOCUMENTS
+    ? parseInt(process.env.IMAGE_DOCUMENTS, 10)
+    : 0;
 
   state = {
     apolloArgs: this.defaultApolloArgs,
@@ -339,8 +355,13 @@ class ImageList extends Component {
   );
 
   render() {
-    const { classes } = this.props;
+    const { classes, user } = this.props;
     const { apolloArgs, columns, pageSizes } = this.state;
+
+    const [, end] =
+      user.range && user.range !== 'all'
+        ? user.range.split('-').map(val => parseInt(val, 10))
+        : [1, this.IMAGE_DOCUMENTS];
 
     return (
       <Query
@@ -406,7 +427,7 @@ class ImageList extends Component {
                   }
                 />
                 <RowDetailState />
-                <CustomPaging totalCount={_allImagesMeta.count} />
+                <CustomPaging totalCount={end || _allImagesMeta.count} />
                 <VirtualTable height="auto" />
                 <TableHeaderRow />
                 <TableRowDetail

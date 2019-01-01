@@ -7,7 +7,7 @@ import { ApolloConsumer } from 'react-apollo';
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
 
-import range from 'lodash/range';
+// import range from 'lodash/range';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -18,21 +18,39 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 
-import InputLabel from '@material-ui/core/InputLabel';
+// import Divider from '@material-ui/core/Divider';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+
+// import InputLabel from '@material-ui/core/InputLabel';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
+// import FormControl from '@material-ui/core/FormControl';
+// import FormHelperText from '@material-ui/core/FormHelperText';
 
-import { Select } from 'formik-material-ui';
+import { TextField } from 'formik-material-ui';
 
 import { Q_GET_IMAGES, Q_CURRENT_USER } from '@/graphql/queries';
 
-@withStyles({
+@withStyles(theme => ({
   formControl: {
     width: '100%',
   },
-})
+  root: {
+    ...theme.mixins.gutters(),
+    paddingTop: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 4,
+  },
+  root2: {
+    ...theme.mixins.gutters(),
+    paddingTop: theme.spacing.unit * 4,
+    paddingBottom: theme.spacing.unit * 2,
+  },
+  center: {
+    margin: 'auto auto',
+    textAlign: 'center',
+  },
+}))
 @withMobileDialog()
 @connect(
   state => ({
@@ -76,6 +94,8 @@ class EditRange extends Component {
     open: false,
   };
 
+  thresholdAll = `1-${this.IMAGE_DOCUMENTS}`;
+
   handleOpen = () => {
     const { toggleDialog } = this.props;
 
@@ -103,25 +123,56 @@ class EditRange extends Component {
       setUser,
     } = this.props;
 
+    const [start, end] =
+      user.range && user.range !== 'all'
+        ? user.range.split('-').map(val => parseInt(val, 10))
+        : [1, this.IMAGE_DOCUMENTS];
+
     return (
       <ApolloConsumer>
         {client => (
           <Fragment>
             <Formik
-              initialValues={{ range: user.range }}
+              initialValues={{
+                range: user.range,
+                rangeStart: start,
+                rangeEnd: end,
+              }}
               validationSchema={Yup.object().shape({
-                range: Yup.string()
-                  .matches(
-                    /^(((\d*)-(\d*))|(all))/g,
-                    'Please enter wether [all, start-end] only.'
+                // range: Yup.string()
+                //   .matches(
+                //     /^(((\d*)-(\d*))|(all))/g,
+                //     'Please enter whether [all, start-end] only.'
+                //   )
+                //   .required('Range is required!'),
+                rangeStart: Yup.number()
+                  .lessThan(
+                    this.IMAGE_DOCUMENTS - 1,
+                    `Cannot enter more than ${this.IMAGE_DOCUMENTS - 1}`
                   )
-                  .required('Range is required!'),
+                  .lessThan(
+                    Yup.ref('rangeEnd'),
+                    'Cannot enter more than Range End'
+                  )
+                  .required('Range Start is required'),
+                rangeEnd: Yup.number()
+                  .moreThan(1, 'Cannot enter less than 1')
+                  .moreThan(
+                    Yup.ref('rangeStart'),
+                    'Cannot enter less than Range Start'
+                  )
+                  .required('Range End is required'),
               })}
               onSubmit={(value, { setSubmitting }) => {
+                let valueSubmitted = `${value.rangeStart}-${value.rangeEnd}`;
+
+                if (valueSubmitted === this.thresholdAll) {
+                  valueSubmitted = 'all';
+                }
+
                 editRangeAction({
-                  variables: value,
+                  variables: { range: valueSubmitted },
                   refetchQueries: [{ query: Q_GET_IMAGES }],
-                  // refetchQueries: () => ['getAllImages'],
                 })
                   .then(async () => {
                     setSubmitting(false);
@@ -180,7 +231,20 @@ class EditRange extends Component {
                       {`Edit Range for ${user.username} `}
                     </DialogTitle>
                     <DialogContent>
-                      <FormControl className={classes.formControl}>
+                      <Paper className={classes.root} elevation={0}>
+                        <Typography variant="h5">Information</Typography>
+                        <Typography component="p" variant="body2">
+                          Image ID for COCO Dataset starts from 1 and ends at
+                          82783
+                        </Typography>
+                        <br />
+                        <Typography component="p" variant="body2">
+                          Image ID for Flickr Dataset starts from 82784 and ends
+                          at 92783
+                        </Typography>
+                      </Paper>
+
+                      {/* <FormControl className={classes.formControl}>
                         <InputLabel shrink htmlFor="range">
                           Image Range
                         </InputLabel>
@@ -206,7 +270,38 @@ class EditRange extends Component {
                           })}
                         </Field>
                         <FormHelperText>Select Image Range</FormHelperText>
-                      </FormControl>
+                      </FormControl> */}
+
+                      {/* <Paper className={classes.root2} elevation={0}>
+                        <Typography
+                          className={classes.center}
+                          component="p"
+                          variant="h5"
+                        >
+                          -- OR --
+                        </Typography>
+                      </Paper> */}
+
+                      <Field
+                        id="rangeStart-field"
+                        name="rangeStart"
+                        type="number"
+                        label="Range Start"
+                        helperText="Insert Range Start"
+                        margin="normal"
+                        className={classes.formControl}
+                        component={TextField}
+                      />
+                      <Field
+                        id="rangeEnd-field"
+                        name="rangeEnd"
+                        type="number"
+                        label="Range End"
+                        helperText="Insert Range End"
+                        margin="normal"
+                        className={classes.formControl}
+                        component={TextField}
+                      />
                     </DialogContent>
                     <DialogActions>
                       {isSubmitting && <LinearProgress />}

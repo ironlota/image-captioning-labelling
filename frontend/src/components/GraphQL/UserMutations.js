@@ -4,7 +4,11 @@ import { Mutation } from 'react-apollo';
 
 import { adopt } from 'react-adopt';
 
-import { M_CHANGE_PASSWORD, M_CHANGE_RANGE } from '@/graphql/mutations';
+import {
+  M_CHANGE_PASSWORD,
+  M_CHANGE_RANGE,
+  M_CHANGE_EMOTION,
+} from '@/graphql/mutations';
 
 export default adopt({
   changePassword: ({ render }) => (
@@ -14,6 +18,11 @@ export default adopt({
   ),
   changeRange: ({ render }) => (
     <Mutation mutation={M_CHANGE_RANGE}>
+      {(mutation, result) => render({ mutation, result })}
+    </Mutation>
+  ),
+  changeEmotion: ({ render }) => (
+    <Mutation mutation={M_CHANGE_EMOTION}>
       {(mutation, result) => render({ mutation, result })}
     </Mutation>
   ),

@@ -9,6 +9,7 @@ export default gql`
       lastName
       lastLogin
       range
+      selectedEmotion
       captionEditCount
       captionCuratedCount
       captionEmotionCount
