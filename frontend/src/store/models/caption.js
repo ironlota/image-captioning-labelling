@@ -2,6 +2,7 @@ const caption = {
   state: {
     curatedCaption: {},
     editCaption: {},
+    togglePanel: {},
   }, // initial state
   reducers: {
     /* eslint-disable camelcase, no-param-reassign */
@@ -11,6 +12,10 @@ const caption = {
     },
     _curatedCaptionStep(state, image_id, step) {
       state.curatedCaption[image_id] = step;
+      return state;
+    },
+    togglePanel(state, objId, value) {
+      state.togglePanel[objId] = value;
       return state;
     },
   },

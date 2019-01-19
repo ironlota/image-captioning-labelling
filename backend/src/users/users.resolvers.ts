@@ -31,7 +31,6 @@ export class UsersResolvers {
 
   @Mutation('createUser')
   async create(@Args('createUserInput') args: CreateUserDto): Promise<User> {
-    // pubSub.publish('catCreated', { catCreated: createdUser });
     const existingUser = await this.usersService.findUsername(args.username);
 
     if (existingUser)

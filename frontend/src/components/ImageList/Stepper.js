@@ -63,7 +63,7 @@ class VerticalLinearStepper extends React.Component {
 
     curateForm: PropTypes.func.isRequired,
     editForm: PropTypes.func.isRequired,
-    emotionForm: PropTypes.func.isRequired,
+    // emotionForm: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -84,9 +84,9 @@ class VerticalLinearStepper extends React.Component {
       'Editing',
     ];
 
-    if (needEmotion) {
-      return [...defaultSteps, 'Create emotion'];
-    }
+    // if (needEmotion) {
+    //   return [...defaultSteps, 'Create emotion'];
+    // }
 
     return defaultSteps;
   }
@@ -169,9 +169,9 @@ class VerticalLinearStepper extends React.Component {
     if (step === 2) {
       return 'edited';
     }
-    if (step === 3) {
-      return 'emotion';
-    }
+    // if (step === 3) {
+    //   return 'emotion';
+    // }
   }
 
   render() {
@@ -180,7 +180,7 @@ class VerticalLinearStepper extends React.Component {
       classes,
       curateForm,
       editForm,
-      emotionForm,
+      // emotionForm,
     } = this.props;
 
     const steps = this.getSteps();
@@ -209,14 +209,14 @@ class VerticalLinearStepper extends React.Component {
                       activeStep: activeStepCurated,
                       steps,
                     })}
-                  {index === 2 &&
+                  {/* {index === 2 &&
                     emotionForm({
                       back: this.handleBack,
                       next: this.handleNext,
                       stepperClasses: classes,
                       activeStep: activeStepCurated,
                       steps,
-                    })}
+                    })} */}
                 </StepContent>
               </Step>
             ))}
@@ -253,14 +253,14 @@ class VerticalLinearStepper extends React.Component {
                 activeStep: activeStepCurated,
                 steps,
               })}
-            {activeStepCurated === 2 &&
+            {/* {activeStepCurated === 2 &&
               emotionForm({
                 back: this.handleBack,
                 next: this.handleNext,
                 stepperClasses: classes,
                 activeStep: activeStepCurated,
                 steps,
-              })}
+              })} */}
           </div>
         </Mobile>
       </div>

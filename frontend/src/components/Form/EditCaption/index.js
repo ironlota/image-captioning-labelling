@@ -18,7 +18,7 @@ class EditCaption extends Component {
     parentClasses: PropTypes.shape({}).isRequired,
     avatarColor: PropTypes.arrayOf(PropTypes.string).isRequired,
 
-    editCaption: PropTypes.func.isRequired,
+    // editCaption: PropTypes.func.isRequired,
 
     objId: PropTypes.number.isRequired,
     imageId: PropTypes.string.isRequired,
@@ -38,17 +38,17 @@ class EditCaption extends Component {
     steps: PropTypes.arrayOf(PropTypes.string).isRequired,
   };
 
-  handleOpen = () => {
-    const { editCaption, caption } = this.props;
+  // handleOpen = () => {
+  //   const { editCaption, caption } = this.props;
 
-    editCaption(caption, true);
-  };
+  //   editCaption(caption, true);
+  // };
 
-  handleClose = () => {
-    const { editCaption, caption } = this.props;
+  // handleClose = () => {
+  //   const { editCaption, caption } = this.props;
 
-    editCaption(caption, false);
-  };
+  //   editCaption(caption, false);
+  // };
 
   render() {
     const {

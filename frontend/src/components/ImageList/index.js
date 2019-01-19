@@ -1,6 +1,8 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import isEmpty from 'lodash/isEmpty';
+
 import { Query } from 'react-apollo';
 import { connect } from 'react-redux';
 
@@ -13,8 +15,14 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import List from '@material-ui/core/List';
 import Snackbar from '@material-ui/core/Snackbar';
+import Typography from '@material-ui/core/Typography';
+
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import deepOrange from '@material-ui/core/colors/deepOrange';
 import deepPurple from '@material-ui/core/colors/deepPurple';
@@ -66,7 +74,7 @@ import StepperForm from './Stepper';
     width: '100%',
   },
   content: {
-    flex: '1 0 auto',
+    // flex: '1 0 auto',
   },
   cover: {
     margin: 'auto auto',
@@ -107,10 +115,10 @@ import StepperForm from './Stepper';
 @connect(
   state => ({
     user: state.user,
+    togglePanelState: state.caption.togglePanel,
   }),
-  ({ message: { setMessage }, user: { setUser } }) => ({
-    setMessage,
-    setUser,
+  ({ caption: { togglePanel } }) => ({
+    togglePanel,
   })
 )
 class ImageList extends Component {
@@ -118,6 +126,8 @@ class ImageList extends Component {
     classes: PropTypes.shape({}).isRequired,
 
     user: PropTypes.shape({}).isRequired,
+    togglePanelState: PropTypes.shape({}).isRequired,
+    togglePanel: PropTypes.func.isRequired,
   };
 
   defaultApolloArgs = {
@@ -165,6 +175,12 @@ class ImageList extends Component {
       ),
     500
   );
+
+  togglePanel = (objId, value) => () => {
+    const { togglePanel: toggle } = this.props;
+
+    toggle(objId, value);
+  };
 
   changePageSize = (pageSize, refetch) => {
     this.setState(
@@ -222,7 +238,7 @@ class ImageList extends Component {
       need_emotion: needEmotion,
     },
   }) => {
-    const { classes } = this.props;
+    const { classes, togglePanelState } = this.props;
 
     const imageCaption = captionsEntity.find(capt => capt.image_id === id);
 
@@ -261,67 +277,110 @@ class ImageList extends Component {
             />
             <CardContent className={classes.content}>
               <List style={{ margin: 'auto auto' }}>
-                <StepperForm
-                  id={id}
-                  objId={objId}
-                  needEmotion={needEmotion}
-                  refetch={refetch}
-                  changeStepCaption={changeStepCaption.mutation}
-                  curateForm={({
-                    back,
-                    next,
-                    stepperClasses,
-                    activeStep,
-                    steps,
-                  }) => (
-                    <CurateCaption
-                      image={url}
+                <ExpansionPanel
+                  expanded={
+                    isEmpty(togglePanelState[objId]) ||
+                    togglePanelState[objId] === 'curating'
+                  }
+                  onChange={this.togglePanel(objId, 'curating')}
+                >
+                  <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography className={classes.heading}>
+                      Curating and Editing Caption
+                    </Typography>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
+                    <StepperForm
+                      id={id}
                       objId={objId}
-                      imageId={id}
-                      parentClasses={classes}
-                      avatarColor={this.avatarColor}
-                      captionEdit={captionsModified}
-                      caption={imageCaption}
-                      action={curateCaption}
-                      refetch={refetch} /* stepper */
-                      handleBack={back}
-                      handleNext={next}
-                      stepperClasses={stepperClasses}
-                      activeStep={activeStep}
-                      steps={steps}
+                      needEmotion={needEmotion}
+                      refetch={refetch}
+                      changeStepCaption={changeStepCaption.mutation}
+                      curateForm={({
+                        back,
+                        next,
+                        stepperClasses,
+                        activeStep,
+                        steps,
+                      }) => (
+                        <CurateCaption
+                          image={url}
+                          objId={objId}
+                          imageId={id}
+                          parentClasses={classes}
+                          avatarColor={this.avatarColor}
+                          captionEdit={captionsModified}
+                          caption={imageCaption}
+                          action={curateCaption}
+                          refetch={refetch} /* stepper */
+                          handleBack={back}
+                          handleNext={next}
+                          stepperClasses={stepperClasses}
+                          activeStep={activeStep}
+                          steps={steps}
+                        />
+                      )}
+                      editForm={({
+                        back,
+                        next,
+                        stepperClasses,
+                        activeStep,
+                        steps,
+                      }) => (
+                        <EditCaption
+                          image={url}
+                          objId={objId}
+                          imageId={id}
+                          parentClasses={classes}
+                          avatarColor={this.avatarColor}
+                          caption={imageCaption}
+                          captionEdit={captionsModified}
+                          action={editCaption}
+                          refetch={refetch} /* stepper */
+                          handleBack={back}
+                          handleNext={next}
+                          stepperClasses={stepperClasses}
+                          activeStep={activeStep}
+                          steps={steps}
+                        />
+                      )}
+                      // emotionForm={({
+                      //   back,
+                      //   next,
+                      //   stepperClasses,
+                      //   activeStep,
+                      //   steps,
+                      // }) => (
+                      //   <EmotionCaption
+                      //     image={url}
+                      //     objId={objId}
+                      //     imageId={id}
+                      //     parentClasses={classes}
+                      //     avatarColor={this.avatarColor}
+                      //     caption={imageCaption}
+                      //     captionEdit={captionsModified}
+                      //     action={emotionCaption}
+                      //     refetch={refetch} /* stepper */
+                      //     handleBack={back}
+                      //     handleNext={next}
+                      //     stepperClasses={stepperClasses}
+                      //     activeStep={activeStep}
+                      //     steps={steps}
+                      //   />
+                      // )}
                     />
-                  )}
-                  editForm={({
-                    back,
-                    next,
-                    stepperClasses,
-                    activeStep,
-                    steps,
-                  }) => (
-                    <EditCaption
-                      image={url}
-                      objId={objId}
-                      imageId={id}
-                      parentClasses={classes}
-                      avatarColor={this.avatarColor}
-                      caption={imageCaption}
-                      captionEdit={captionsModified}
-                      action={editCaption}
-                      refetch={refetch} /* stepper */
-                      handleBack={back}
-                      handleNext={next}
-                      stepperClasses={stepperClasses}
-                      activeStep={activeStep}
-                      steps={steps}
-                    />
-                  )}
-                  emotionForm={({
-                    back,
-                    next,
-                    stepperClasses,
-                    activeStep,
-                    steps,
-                  }) => (
+                  </ExpansionPanelDetails>
+                </ExpansionPanel>
+                <ExpansionPanel
+                  expanded={togglePanelState[objId] === 'emotion'}
+                  onChange={this.togglePanel(objId, 'emotion')}
+                >
+                  <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography className={classes.heading}>
+                      Create Emotion
+                    </Typography>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
                     <EmotionCaption
                       image={url}
                       objId={objId}
@@ -331,15 +390,10 @@ class ImageList extends Component {
                       caption={imageCaption}
                       captionEdit={captionsModified}
                       action={emotionCaption}
-                      refetch={refetch} /* stepper */
-                      handleBack={back}
-                      handleNext={next}
-                      stepperClasses={stepperClasses}
-                      activeStep={activeStep}
-                      steps={steps}
+                      refetch={refetch}
                     />
-                  )}
-                />
+                  </ExpansionPanelDetails>
+                </ExpansionPanel>
               </List>
             </CardContent>
           </Card>

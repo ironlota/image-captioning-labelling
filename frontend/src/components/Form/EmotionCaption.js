@@ -25,6 +25,8 @@ import { TextField } from 'formik-material-ui';
 
 import redirect from '@/utils/redirect';
 
+import { Q_GET_IMAGES } from '@/graphql/queries';
+
 @withStyles(theme => ({
   formField: {
     width: '100%',
@@ -71,10 +73,10 @@ class EmotionCaption extends Component {
 
     // stepper
     stepperClasses: PropTypes.shape({}).isRequired,
-    activeStep: PropTypes.number.isRequired,
-    handleBack: PropTypes.func.isRequired,
-    handleNext: PropTypes.func.isRequired,
-    steps: PropTypes.arrayOf(PropTypes.string).isRequired,
+    // activeStep: PropTypes.number.isRequired,
+    // handleBack: PropTypes.func.isRequired,
+    // handleNext: PropTypes.func.isRequired,
+    // steps: PropTypes.arrayOf(PropTypes.string).isRequired,
 
     user: PropTypes.shape({}).isRequired,
     setMessage: PropTypes.func.isRequired,
@@ -147,11 +149,11 @@ class EmotionCaption extends Component {
       setMessage,
 
       // stepper
-      stepperClasses,
-      activeStep,
-      handleBack,
-      handleNext,
-      steps,
+      // stepperClasses,
+      // activeStep,
+      // handleBack,
+      // handleNext,
+      // steps,
     } = this.props;
 
     let initialValues = {
@@ -181,11 +183,14 @@ class EmotionCaption extends Component {
           )}
           onSubmit={({ __typename, ...values }, { setSubmitting }) => {
             emotionCaptionAction
-              .mutation({ variables: { input: values } })
+              .mutation({
+                variables: { input: values },
+                refetchQueries: [{ query: Q_GET_IMAGES }],
+              })
               .then(() => {
                 setSubmitting(false);
 
-                handleNext();
+                // handleNext();
 
                 setMessage({
                   message: `Create emotion for Image ID ${imageId} SUCCESS!`,
@@ -234,10 +239,37 @@ class EmotionCaption extends Component {
                   <ListItemText primary={capt.id} secondary={capt.en} />
                 </ListItem>
               ))}
+              {['happy', 'sad', 'angry'].map((key, idx) =>
+                isEmpty(initialValues[key]) ? (
+                  <Fragment />
+                ) : (
+                  <ListItem key={key} dense>
+                    <ListItemAvatar>
+                      <Avatar className={parentClasses[avatarColor[idx]]}>
+                        {capitalize(key)}
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={initialValues[key]}
+                      // secondary={capt.en}
+                    />
+                  </ListItem>
+                  // <Typography key={key}>
+                  //   {`${capitalize(key)} : ${initialValues[key]}`}
+                  // </Typography>
+                )
+              )}
               {this.renderFieldForm(user.selectedEmotion || 'all')}
-              <div className={stepperClasses.actionsContainer}>
+              <div>
                 {isSubmitting && <LinearProgress />}
-                <div>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={submitForm}
+                >
+                  Finish
+                </Button>
+                {/* <div>
                   <Button
                     disabled={activeStep === 0}
                     onClick={handleBack}
@@ -253,7 +285,7 @@ class EmotionCaption extends Component {
                   >
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                   </Button>
-                </div>
+                </div> */}
               </div>
             </form>
           )}

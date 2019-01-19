@@ -114,11 +114,11 @@ export class UsersService {
 
       if (
         foundCaption.step !== 'curated' &&
-        foundCaption.step !== 'edited' &&
-        foundCaption.step !== 'emotion'
+        foundCaption.step !== 'edited'
+        // foundCaption.step !== 'emotion'
       ) {
         throw new UnauthorizedException(
-          'Complete curation step before continuing!',
+          'Complete curation or editing step before continuing!',
         );
       }
 
@@ -182,6 +182,7 @@ export class UsersService {
 
   async emotionCaption(user: User, create: EmotionCaptionDto): Promise<User> {
     const { image_id, obj_id, ...rest } = create;
+    const step = 'emotion';
 
     try {
       const data = await this.userModel.findOne({
@@ -192,19 +193,22 @@ export class UsersService {
         capt => capt.obj_id === create.obj_id,
       );
 
-      if (foundCaption.step !== 'edited' && foundCaption.step !== 'emotion') {
-        throw new UnauthorizedException(
-          'Complete curation and edited step before continuing!',
-        );
-      }
-
-      if (Object.keys(foundCaption.captionEmotion._doc).length === 1) {
+      if (foundCaption) {
+        foundCaption.captionEmotion = rest;
+        foundCaption.step = 'emotion';
+        if (Object.keys(foundCaption.captionEmotion._doc).length === 1) {
+          data.captionEmotionCount += 1;
+        }
+      } else {
+        data.captions.push({ image_id, obj_id, captionEmotion: rest, step });
         data.captionEmotionCount += 1;
       }
 
-      foundCaption.captionEmotion = rest;
-
-      foundCaption.step = 'emotion';
+      // if (foundCaption.step !== 'edited' && foundCaption.step !== 'emotion') {
+      //   throw new UnauthorizedException(
+      //     'Complete curation and edited step before continuing!',
+      //   );
+      // }
 
       const _data = await data.save();
 
