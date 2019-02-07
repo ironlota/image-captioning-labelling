@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next -p 4000",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "now-build": "next build && next export -o dist"
   },
   "dependencies": {
     "@devexpress/dx-react-core": "^1.10.0",

@@ -108,8 +108,8 @@ class MenuAppBar extends React.Component {
       <ApolloConsumer>
         {apolloClient => (
           <div className={classes.root}>
-            <AppBar position="static">
-              <Toolbar>
+            <AppBar style={{ position: 'fixed', top: 0 }}>
+              <Toolbar className={{ position: 'absolute' }}>
                 {!!user.username && (
                   <IconButton
                     className={classes.menuButton}
@@ -140,8 +140,14 @@ class MenuAppBar extends React.Component {
                     <Menu
                       id="menu-appbar"
                       anchorEl={anchorEl}
-                      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                      anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
                       open={open}
                       onClose={this.handleClose}
                     >
@@ -155,8 +161,9 @@ class MenuAppBar extends React.Component {
                   </div>
                 )}
               </Toolbar>
+
+              <Drawer open={openDrawer} toggleDrawer={this.toggleDrawer} />
             </AppBar>
-            <Drawer open={openDrawer} toggleDrawer={this.toggleDrawer} />
           </div>
         )}
       </ApolloConsumer>

@@ -14,6 +14,14 @@ import Navbar from './NavBar';
 @withStyles({
   root: {
     textAlign: 'center',
+    // paddingTop: 56,
+  },
+  content: {
+    flexGrow: 1,
+    // padding: theme.spacing.unit * 3,
+    height: '100vh',
+    overflow: 'auto',
+    marginTop: 64,
   },
 })
 @connect(
@@ -38,6 +46,7 @@ class Layout extends Component {
     return (
       <Paper className={classes.root}>
         <Navbar />
+        <main className={classes.content}>{children}</main>
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={openSnackbar}
@@ -49,7 +58,6 @@ class Layout extends Component {
             message={messageSnackbar}
           />
         </Snackbar>
-        {children}
       </Paper>
     );
   }

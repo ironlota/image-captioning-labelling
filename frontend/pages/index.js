@@ -13,7 +13,7 @@ import checkLoggedIn from '@/utils/checkLoggedIn';
 @withStyles({
   root: {
     textAlign: 'center',
-    height: '100vh',
+    // height: '100vh',
   },
 })
 class Images extends React.Component {

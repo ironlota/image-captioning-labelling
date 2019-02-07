@@ -39,12 +39,10 @@ import {
 
 import {
   Grid,
-  VirtualTable,
+  Table,
   TableHeaderRow,
   TableRowDetail,
   PagingPanel,
-  Toolbar,
-  SearchPanel,
 } from '@devexpress/dx-react-grid-material-ui';
 
 import { Q_GET_IMAGES } from '@/graphql/queries';
@@ -176,10 +174,10 @@ class ImageList extends Component {
     500
   );
 
-  togglePanel = (objId, value) => () => {
+  togglePanel = (objId, value) => (_, isExpanded) => {
     const { togglePanel: toggle } = this.props;
 
-    toggle(objId, value);
+    toggle(objId, isExpanded ? value : false);
   };
 
   changePageSize = (pageSize, refetch) => {
@@ -278,10 +276,7 @@ class ImageList extends Component {
             <CardContent className={classes.content}>
               <List style={{ margin: 'auto auto' }}>
                 <ExpansionPanel
-                  expanded={
-                    isEmpty(togglePanelState[objId]) ||
-                    togglePanelState[objId] === 'curating'
-                  }
+                  expanded={togglePanelState[objId] === 'curating'}
                   onChange={this.togglePanel(objId, 'curating')}
                 >
                   <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -480,9 +475,9 @@ class ImageList extends Component {
                     this.changePageSize(_pageSize, refetch)
                   }
                 />
-                <RowDetailState />
                 <CustomPaging totalCount={end || _allImagesMeta.count} />
-                <VirtualTable height="auto" />
+                <RowDetailState />
+                <Table />
                 <TableHeaderRow />
                 <TableRowDetail
                   contentComponent={this.rowDetail(
@@ -491,8 +486,8 @@ class ImageList extends Component {
                   )}
                 />
                 <PagingPanel pageSizes={pageSizes} />
-                <Toolbar />
-                <SearchPanel />
+                {/* <Toolbar />
+                <SearchPanel /> */}
               </Grid>
             </Paper>
           );
